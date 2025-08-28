@@ -12,6 +12,8 @@ def api_root(request):
         'endpoints': {
             'admin': '/admin/',
             'auth': '/api/v1/auth/',
+            'posts': '/api/v1/posts/',
+            'comments': '/api/v1/comments/',
         }
     })
 
@@ -20,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/auth/', include('apps.accounts.urls')),
     path('api/v1/posts/', include('apps.main.urls')),
+    path('api/v1/comments/', include('apps.comments.urls')),
 ]
 
 if settings.DEBUG:
