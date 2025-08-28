@@ -4,6 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.http import JsonResponse
 
+
 def api_root(request):
     return JsonResponse({
         'message': 'Welcome to News API',
