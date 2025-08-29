@@ -183,6 +183,56 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
+# Logging Configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'logs/django.log',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        # You can add more loggers for your apps here
+        'apps.main':{
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'apps.comments':{
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': False, # Чтобы избежать дублирования логов
+        },
+    },
+}
+
+# Direction for log files
+os.makedirs(BASE_DIR / 'logs', exist_ok=True)
+
 
 # URL фронтенда для редиректов
 FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:5173')
@@ -219,16 +269,16 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'apps.subscribe.tasks.send_subscription_expiry_reminder',
         'schedule': 86400.0,  # Каждый день
     },
-    'cleanup-old-payments': {
-        'task': 'apps.payment.tasks.cleanup_old_payments',
-        'schedule': 604800.0,  # Каждую неделю
-    },
-    'cleanup-old-webhook-events': {
-        'task': 'apps.payment.tasks.cleanup_old_webhook_events',
-        'schedule': 86400.0,  # Каждый день
-    },
-    'retry-failed-webhook-events': {
-        'task': 'apps.payment.tasks.retry_failed_webhook_events',
-        'schedule': 3600.0,  # Каждый час
-    },
+    # 'cleanup-old-payments': {
+    #     'task': 'apps.payment.tasks.cleanup_old_payments',
+    #     'schedule': 604800.0,  # Каждую неделю
+    # },
+    # 'cleanup-old-webhook-events': {
+    #     'task': 'apps.payment.tasks.cleanup_old_webhook_events',
+    #     'schedule': 86400.0,  # Каждый день
+    # },
+    # 'retry-failed-webhook-events': {
+    #     'task': 'apps.payment.tasks.retry_failed_webhook_events',
+    #     'schedule': 3600.0,  # Каждый час
+    # },
 }
